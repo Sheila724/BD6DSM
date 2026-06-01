@@ -15,6 +15,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
+
+import com.ecommerce.entity.Cliente;
+import com.ecommerce.entity.Produto;
 /**
  * Servico principal que executa o loop infinito de insercoes e consultas.
  *
@@ -49,9 +52,23 @@ public class LoopService {
 
     @EventListener(ApplicationReadyEvent.class)
     public void iniciar() {
+        carregarIdsExistentes();
         new Thread(this::executarLoop, "loop-principal").start();
     }
+    private void carregarIdsExistentes() {
+        List<Cliente> clientes = clienteService.listarTodos();
+        for (Cliente c : clientes) {
+            clienteIds.add(c.getId());
+        }
 
+        List<Produto> produtos = produtoService.listarTodos();
+        for (Produto p : produtos) {
+            produtoIds.add(p.getId());
+        }
+
+        System.out.printf("[INICIALIZACAO] Carregados %d clientes e %d produtos existentes%n",
+                clienteIds.size(), produtoIds.size());
+    }
     private void executarLoop() {
         System.out.println("\n" + "=".repeat(60));
         System.out.println("  SISTEMA DE REPLICACAO DE BANCO DE DADOS");

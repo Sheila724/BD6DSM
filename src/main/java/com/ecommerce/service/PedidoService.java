@@ -99,4 +99,14 @@ public class PedidoService {
     public List<Pedido> listarPorCliente(Long clienteId) {
         return pedidoRepository.findByClienteId(clienteId);
     }
+
+    @Transactional(readOnly = true)
+    public List<Pedido> listarTodos() {
+        return pedidoRepository.findAll();
+    }
+
+    @Transactional(readOnly = true)
+    public List<PedidoItem> listarTodosItens() {
+        return pedidoItemRepository.findAll();
+    }
 }

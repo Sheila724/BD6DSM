@@ -14,12 +14,15 @@ public class ProdutoController {
     @Autowired
     private ProdutoService produtoService;
 
-    /**
-     * GET /produtos/baixo-estoque?limite=10
-     * Lista produtos com estoque abaixo ou igual ao limite (leitura na REPLICA).
-     */
+    /** GET /produtos — lista todos os produtos (leitura na REPLICA) */
+    @GetMapping
+    public List<Produto> listarTodos() {
+        return produtoService.listarTodos();
+    }
+
+    /** GET /produtos/baixo-estoque?limite=10 — produtos com estoque abaixo do limite */
     @GetMapping("/baixo-estoque")
-    public List<Produto> baixoEstoque(@RequestParam(defaultValue = "10") int limite) {
+    public List<Produto> listarBaixoEstoque(@RequestParam(defaultValue = "10") int limite) {
         return produtoService.listarBaixoEstoque(limite);
     }
 }
