@@ -1,5 +1,12 @@
 # BD6DSM — E-commerce com Replicação MySQL
 
+**Integrantes:**
+
+* Sheila Alves
+* Éllen Dias Farias
+* Gabriel Abramovick
+* Habbiner Andrade
+
 Atividade da disciplina **Computação em Nuvem 2 — FATEC**.
 
 Aplicação Java/Spring Boot com separação de leitura e escrita entre banco primário e réplica(s) MySQL.
