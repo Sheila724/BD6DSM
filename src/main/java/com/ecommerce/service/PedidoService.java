@@ -58,6 +58,7 @@ public class PedidoService {
         }
 
         pedido.setValorTotal(valorTotal);
+        pedido.setStatus("FINALIZADO");
         pedido.setItens(itens);
 
         Pedido salvo = pedidoRepository.save(pedido);

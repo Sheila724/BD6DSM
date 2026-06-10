@@ -29,7 +29,7 @@ public class Pedido {
     private BigDecimal valorTotal;
 
     @Column(nullable = false, length = 20)
-    private String status = "PENDENTE";
+    private String status = "FINALIZADO";
 
     @CreationTimestamp
     @Column(name = "criado_em", updatable = false)

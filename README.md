@@ -5,7 +5,7 @@
 * Sheila Alves
 * Éllen Dias Farias
 * Gabriel Abramovick
-* Habbiner Andrade
+* Habbiner Soares de Andrade
 
 Atividade da disciplina **Computação em Nuvem 2 — FATEC**.
 

@@ -107,17 +107,16 @@ public class LoopService {
 
                 // 4.1 Dados do pedido recém-criado
                 pedidoService.buscarPorId(pedido.getId()).ifPresent(p ->
-                        System.out.printf("  4.1 Pedido %d: cliente=%s | total=R$%.2f%n",
-                                p.getId(), p.getCliente().getNome(), p.getValorTotal()));
+                        System.out.printf("  4.1 Pedido %d%n       Cliente: %s%n       Valor total: R$%.2f%n       Status: %s%n",
+                                p.getId(), p.getCliente().getNome(), p.getValorTotal(), p.getStatus()));
 
                 // 4.2 Itens do pedido
                 List<PedidoItem> itens = pedidoService.listarItensDoPedido(pedido.getId());
-                System.out.printf("  4.2 Itens do pedido %d:%n", pedido.getId());
                 itens.forEach(item -> System.out.printf(
-                        "       - %-30s x%d  R$%.2f%n",
+                        "  4.2 PedidoItem %d%n       Produto: %s%n       Quantidade: %d%n",
+                        item.getId(),
                         item.getProduto().getDescricao(),
-                        item.getQuantidade(),
-                        item.getValorUnitario()));
+                        item.getQuantidade()));
 
                 // 4.3 Ultimos 5 pedidos do cliente
                 List<Pedido> ultimos = pedidoService.ultimos5PorCliente(clienteEscolhido);
