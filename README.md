@@ -89,53 +89,61 @@ http://localhost:8080
 
 * Java 21+
 * Maven 3.9+
-* Docker
-* Docker Compose
+* MySQL 8.0 (VPS ou ambiente do professor)
+* Docker e Docker Compose *(opcional — alternativa local)*
 
 ---
 
-## Executando Localmente
+## Executando com banco na VPS (recomendado)
 
-Localmente, leitura e escrita apontam para o mesmo banco.
+Leitura e escrita apontam para o **mesmo banco na VPS** durante o desenvolvimento. Não é necessário configurar replicação real.
 
-Não é necessário configurar replicação.
+### Passo a passo completo
 
-### 1. Suba o banco
+Consulte **[docs/SETUP-VPS.md](docs/SETUP-VPS.md)** — inclui:
+
+1. Instalação/configuração do MySQL na VPS
+2. Criação do database `aula-db` e tabelas (`init/setup-vps.sql`)
+3. Usuário, firewall e teste de conexão remota
+4. Configuração do `.env`
+5. O que fazer no dia da apresentação
+
+### Resumo rápido
+
+**1. Na VPS — criar o banco:**
 
 ```bash
-docker compose up -d
+mysql -u root -p < init/setup-vps.sql
 ```
 
-Será iniciado um MySQL 8.0 na porta `3306` com o schema já aplicado.
-
-### 2. Configure o `.env`
+**2. Na sua máquina — configurar conexão:**
 
 ```bash
 cp .env.example .env
 ```
 
-Configuração padrão:
+Edite o `.env` com o IP da VPS:
 
 ```env
-DB_PRIMARY_HOST=localhost
+DB_PRIMARY_HOST=SEU_IP_VPS
 DB_PRIMARY_PORT=3306
 DB_PRIMARY_DATABASE=aula-db
-DB_PRIMARY_USERNAME=root
-DB_PRIMARY_PASSWORD=teste
+DB_PRIMARY_USERNAME=bd6dsm
+DB_PRIMARY_PASSWORD=SUA_SENHA
 
-DB_REPLICAS=localhost:3306
+DB_REPLICAS=SEU_IP_VPS:3306
 DB_REPLICA_DATABASE=aula-db
-DB_REPLICA_USERNAME=root
-DB_REPLICA_PASSWORD=teste
+DB_REPLICA_USERNAME=bd6dsm
+DB_REPLICA_PASSWORD=SUA_SENHA
 ```
 
-### 3. Execute a aplicação
+**3. Executar a aplicação:**
 
 ```bash
 mvn spring-boot:run
 ```
 
-### 4. Acesse o sistema
+**4. Acessar (opcional):**
 
 ```text
 http://localhost:8080
@@ -143,32 +151,41 @@ http://localhost:8080
 
 ---
 
+## Alternativa: Docker local (opcional)
+
+Se preferir um MySQL local sem VPS:
+
+```bash
+docker compose up -d
+cp .env.example .env
+```
+
+Configure o `.env` com `DB_PRIMARY_HOST=localhost` e `DB_REPLICAS=localhost:3306`.
+
+---
+
 ## Ambiente da Apresentação
 
-O professor fornecerá os dados do banco hospedado em cloud.
-
-Basta atualizar o arquivo `.env`:
+O professor fornecerá os IPs na hora. **Altere somente o `.env`:**
 
 ```env
-DB_PRIMARY_HOST=<ip-fornecido>
-DB_PRIMARY_PORT=<porta>
+DB_PRIMARY_HOST=<ip-primario>
+DB_PRIMARY_PORT=3306
 DB_PRIMARY_DATABASE=aula-db
 DB_PRIMARY_USERNAME=<usuario>
 DB_PRIMARY_PASSWORD=<senha>
 
-DB_REPLICAS=<ip-replica>:<porta>
+DB_REPLICAS=<ip-replica-1>:3306,<ip-replica-2>:3306
 DB_REPLICA_DATABASE=aula-db
 DB_REPLICA_USERNAME=<usuario>
 DB_REPLICA_PASSWORD=<senha>
 ```
 
-Executar novamente:
+Reinicie a aplicação:
 
 ```bash
 mvn spring-boot:run
 ```
-
-O front-end continuará funcionando normalmente exibindo os dados do ambiente cloud.
 
 ---
 
