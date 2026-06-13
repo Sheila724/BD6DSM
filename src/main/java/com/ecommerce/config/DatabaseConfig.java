@@ -67,10 +67,12 @@ public class DatabaseConfig {
     // ─────────────────────────────────────────────────────────────────────────
 
     private DataSource criarHikari(String host, int port, String database,
-                                   String username, String password, String poolName) {
+                                   String username, String password, String poolName,
+                                   boolean criarBancoSeNaoExistir) {
         HikariDataSource ds = new HikariDataSource();
+        String extras = criarBancoSeNaoExistir ? "createDatabaseIfNotExist=true&" : "";
         ds.setJdbcUrl(String.format(
-                "jdbc:mysql://%s:%d/%s?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=America/Sao_Paulo",
+                "jdbc:mysql://%s:%d/%s?" + extras + "useSSL=false&allowPublicKeyRetrieval=true&verifyServerCertificate=false&serverTimezone=America/Sao_Paulo",
                 host, port, database));
         ds.setUsername(username);
         ds.setPassword(password);
@@ -85,7 +87,7 @@ public class DatabaseConfig {
     private DataSource primaryDataSource() {
         System.out.printf("[config] Banco primario: %s:%d/%s%n", primaryHost, primaryPort, primaryDatabase);
         return criarHikari(primaryHost, primaryPort, primaryDatabase,
-                primaryUsername, primaryPassword, "pool-primary");
+                primaryUsername, primaryPassword, "pool-primary", true);
     }
 
     private List<DataSource> replicaDataSources() {
@@ -97,8 +99,9 @@ public class DatabaseConfig {
             String host = partes[0];
             int port = partes.length > 1 ? Integer.parseInt(partes[1]) : 3306;
             System.out.printf("[config] Replica %d: %s:%d/%s%n", i, host, port, replicaDatabase);
+            // replicas sao read-only — nao pode criar banco
             fontes.add(criarHikari(host, port, replicaDatabase,
-                    replicaUsername, replicaPassword, "pool-replica-" + i));
+                    replicaUsername, replicaPassword, "pool-replica-" + i, false));
         }
         return fontes;
     }
